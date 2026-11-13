@@ -61,3 +61,11 @@
 @media(max-width:720px){.excel-export-card{padding:17px}.excel-export-card .dashboard-tools>*{width:100%;max-width:none!important}}
 
 .inline-error{font-size:13px;font-weight:700;color:#b74330;background:#fff1eb;border:1px solid #f3cebf;padding:9px 12px;border-radius:9px;margin-top:10px}.result-card{scroll-margin-top:110px}
+
+/* Envío voluntario del resultado calculado al WhatsApp del docente. */
+.whatsapp-share{margin:20px 0;padding:19px;border:1px solid #bfe4ca;border-radius:16px;background:#f0faf3;text-align:center}
+.whatsapp-share p{margin:0 0 13px;color:#3f6550;font-size:12px;line-height:1.6}
+.btn-whatsapp{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:#25d366;border-color:#20bd5a;color:#073d1c;box-shadow:0 8px 20px #25d36630}
+.btn-whatsapp:hover{background:#20c45e;border-color:#1bae50;transform:translateY(-1px)}
+.btn-whatsapp:focus-visible{outline:3px solid #83e6a8;outline-offset:3px}
+@media(max-width:720px){.btn-whatsapp{width:100%}.whatsapp-share{padding:16px}}

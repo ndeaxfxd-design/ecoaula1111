@@ -2,6 +2,7 @@
 
 const cfg = window.ECO_CONFIG || {};
 const connected = Boolean(cfg.supabaseUrl && cfg.supabaseAnonKey);
+const WHATSAPP_NUMBER = '59173698997';
 const DEMO_KEY = 'ecoaula_7_botones_demo_v1'; // conserva los registros demo anteriores
 const VERSION = 'eco7_indicadores_v1'; // instrumento idéntico; campos adicionales retrocompatibles
 const chosen = {};
@@ -131,6 +132,31 @@ function impactForRow(row){
   // Siempre recalcular desde las respuestas: los datos viejos tienen el mismo cuestionario.
   return estimateImpact(row.respuestas||{});
 }
+function whatsappShareUrl(row){
+  const impact=impactForRow(row);
+  const total=impact.subtotal_co2e_mes;
+  const resultLine=(label,value)=>{
+    if(value===null||!Number.isFinite(value))return `${label}: Sin estimación`;
+    const percentage=total>0?Math.round(value/total*100):0;
+    return `${label}: ${fmt(value)} kg CO₂e/mes (${percentage}% del subtotal)`;
+  };
+  const subtotal=impact.subtotal_completo
+    ? `${fmt(total)} kg CO₂e/mes`
+    : (total>0?`${fmt(total)} kg CO₂e/mes (parcial)`:'No disponible');
+  const message=[
+    '🌿 EcoAula · Resultado ambiental',
+    `Código: ${row.codigo_alumno}`,
+    `Curso: ${row.grupo}`,
+    '',
+    `Subtotal orientativo: ${subtotal}`,
+    resultLine('🚌 Transporte',impact.transporte_co2e_mes),
+    resultLine('⚡ Electricidad',impact.electricidad_co2e_mes),
+    resultLine('🥩 Alimentación',impact.res_co2e_mes),
+    '',
+    'Los porcentajes muestran la participación dentro del subtotal calculado; no representan un porcentaje de contaminación total.'
+  ].join('\n');
+  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+}
 function fmtImpact(v){return v===null||!Number.isFinite(v)?'Sin estimación':`${fmt(v)} kg`}
 function displayImpact(row){
   const imp=impactForRow(row);
@@ -240,6 +266,8 @@ function showResult(row,stored=true,saveError=''){
     <div class="metric-tile"><strong>${fmt(m.electricidad_kwh_persona_mes)}</strong><small>kWh/mes asignados por persona del hogar</small></div>
     <div class="metric-tile"><strong>${fmt(m.res_kg_semana,2)}</strong><small>kg de carne de res estimados por semana</small></div></div></div>
     ${saveNotice}
+    <div class="whatsapp-share"><p>Envía este resultado al docente por WhatsApp. Se abrirá el mensaje preparado y tú confirmarás el envío.</p>
+      <a class="btn btn-whatsapp" href="${esc(whatsappShareUrl(row))}" target="_blank" rel="noopener noreferrer" aria-label="Enviar resultado por WhatsApp">Enviar resultado por WhatsApp <span aria-hidden="true">↗</span></a></div>
     <div class="result-actions">${connected&&!stored?'<button type="button" class="btn btn-primary" id="retrySave">Reintentar guardar</button>':''}${connected?'':'<button type="button" class="btn btn-outline" id="anotherSurvey">Probar otra encuesta</button>'}</div></div>`;
   $('#anotherSurvey')?.addEventListener('click',()=>{saved=false;Object.keys(chosen).forEach(k=>delete chosen[k]);$('#surveyForm').reset();$('#surveyForm').classList.remove('survey-submitted');$('#surveyForm').querySelectorAll('input,button').forEach(el=>el.disabled=false);$('.submit-card').hidden=false;$('#surveyArea').hidden=false;$('#resultArea').hidden=true;buildQuestions();$('#encuesta').scrollIntoView({behavior:'smooth'})});
   $('#retrySave')?.addEventListener('click',()=>{if(!saved)sendSurvey({preventDefault(){}})});
