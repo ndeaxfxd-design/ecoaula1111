@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f8f3">
+  <meta name="description" content="EcoAula: encuesta interactiva de 7 preguntas esenciales y análisis estadístico del curso, con desglose de emisiones estimadas.">
+  <title>EcoAula · Encuesta ambiental rápida</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="config.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#inicio" aria-label="Volver al inicio"><span class="brand-icon">✳</span>eco<span>aula</span><b>.</b></a>
+    <nav class="nav-actions" aria-label="Navegación">
+      <a href="#encuesta" class="nav-text">Encuesta</a>
+      <button id="adminLink" class="btn btn-outline" type="button"><span aria-hidden="true">↓</span> Descargar Excel · docente</button>
+    </nav>
+  </header>
+
+  <main id="inicio">
+    <section class="intro container">
+      <div class="intro-copy">
+        <span class="overline"><span class="tiny-dot"></span> PROYECTO UNIVERSITARIO · MEDIO AMBIENTE</span>
+        <h1>Descubre tu impacto<br>con <em>pocas respuestas.</em></h1>
+        <p>Responde tocando los botones y, al final de esta misma página, descubre tu impacto estimado por transporte, electricidad y alimentación. Los datos quedan listos para que el docente los exporte a Excel.</p>
+        <div class="intro-meta"><span>⚡ 2 minutos</span><span>✳ 7 preguntas clave</span><span>📊 Resultado en esta página</span></div>
+      </div>
+      <div class="intro-art" aria-hidden="true"><span class="big-leaf">✳</span><span class="art-tag tag-a">🚲 Movilidad</span><span class="art-tag tag-b">⚡ Energía</span><span class="art-tag tag-c">🥗 Alimentación</span></div>
+    </section>
+
+    <section class="survey container" id="encuesta">
+      <div class="survey-top">
+        <div><span class="section-label">ENCUESTA INDIVIDUAL</span><h2>Selecciona tus respuestas<span class="green-dot">.</span></h2><p>Solo toca una opción en cada tarjeta. Desliza hacia abajo para responderlas todas. Tu resultado aparecerá aquí debajo, sin abrir otra página.</p></div>
+        <div class="progress-wrap" aria-live="polite"><div class="progress-number"><strong id="progressCount">0 de 7</strong> respondidas</div><div class="progress-track"><div id="progressFill"></div></div></div>
+      </div>
+      <div id="surveyArea">
+        <form id="surveyForm" novalidate>
+          <div class="identity-card">
+            <div class="identity-heading"><span class="identity-icon">👤</span><div><h3>Primero, identifica tu respuesta</h3><p>Utiliza el código que te asigne el docente. No pedimos tu nombre ni correo.</p></div></div>
+            <div class="identity-fields">
+              <label>Código de alumno <input id="studentCode" name="studentCode" maxlength="20" minlength="3" placeholder="Ej.: A001" autocomplete="off" required></label>
+              <label>Curso o paralelo <input id="classGroup" name="classGroup" maxlength="40" minlength="2" placeholder="Ej.: Industrial 3A" autocomplete="off" required></label>
+            </div>
+          </div>
+          <div id="questions" class="questions-grid"></div>
+          <div class="submit-card">
+            <label class="consent"><input type="checkbox" id="consent" required><span>Autorizo el uso académico de mis respuestas codificadas para el análisis estadístico del curso, con desglose de emisiones estimadas. Entiendo que veré estimaciones parciales de CO₂e y no una medición completa de mi huella ambiental.</span></label>
+            <p class="error" id="surveyError" role="alert" aria-live="polite"></p>
+            <div class="submit-row"><div class="submit-note"><b>¡Eso es todo!</b><small>Todas las respuestas en esta misma página.</small></div><button class="btn btn-primary btn-submit" id="submitSurvey" type="submit">Enviar y ver mi impacto aquí <span aria-hidden="true">↓</span></button></div>
+          </div>
+        </form>
+      </div>
+      <div id="resultArea" hidden></div>
+    </section>
+
+    <section class="method container" id="metodologia"><div><span class="section-label">SOBRE LOS RESULTADOS</span><h2>¿Qué estamos midiendo?</h2></div><p>Al finalizar se muestran estimaciones en <b>kg CO₂e/mes</b> para transporte universitario, consumo eléctrico del hogar repartido por persona y carne de res. Se usan rangos y referencias internacionales; el valor <b>no representa la huella de carbono completa</b>. Los factores de transporte corresponden al Reino Unido (2026), electricidad a Bolivia (2025) y res a un promedio mundial. <a href="https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2026" target="_blank" rel="noopener noreferrer">Transporte</a> · <a href="https://ember-energy.org/data/electricity-data-explorer/" target="_blank" rel="noopener noreferrer">Electricidad</a> · <a href="https://ourworldindata.org/grapher/ghg-per-kg-poore" target="_blank" rel="noopener noreferrer">Alimentación</a>.</p></section>
+  </main>
+  <footer><strong>✳ ecoaula.</strong><span>Proyecto académico de Medio Ambiente · 2026</span></footer>
+
+  <dialog id="adminDialog" class="admin-dialog" aria-labelledby="adminHeading"><div class="dialog-head"><div><span class="section-label">ACCESO PRIVADO</span><h2 id="adminHeading">Exportar datos a Excel</h2></div><button type="button" id="closeAdmin" class="close-dialog" aria-label="Cerrar panel">×</button></div><div id="adminContent"></div></dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
